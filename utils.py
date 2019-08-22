@@ -47,7 +47,7 @@ def search_department(qs):
 
 def course_to_str(course):
     qstr = ''
-    qstr = course['title'] + 'گروه' + course['group'] + '\n' +course['time_room'] + '\n' + course['teacher']
+    qstr = course['title'] + ' گروه ' + course['group'] + '\n' +course['time_room'] + '\n' + course['teacher']
     return qstr
 
 
