@@ -14,7 +14,7 @@ def get_dep_by_id(dep_id):
 class User:
     def __init__(self, chat_id):
         self.chat_id = chat_id
-        self.dep_id = '2903' 
+        self.dep_id = '3401' 
         self.courses = []
     
     def search_course(self, qs):
