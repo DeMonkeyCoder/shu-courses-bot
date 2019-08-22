@@ -174,22 +174,30 @@ def join_data():
     f = open('departments' + SEMESTER + '.txt', 'r')
     departments = json.loads(f.read())
     f.close()
-    final_data = {}
+    final_data = []
     for dep in departments:
 
         f = open(SEMESTER + '/' + dep['id'] + '.txt', 'r')
         courses = json.loads(f.read())
         f.close()
-        final_data[dep['id']] = {
+
+        courses_final = []
+        for c in courses:
+            objc = { 'ident' : c}
+            objc.update(courses[c])
+            courses_final.append(objc)
+
+        final_data.append({
+            'id': dep['id'],
             'title': dep['title'],
-            'courses': courses
-        }
+            'courses': courses_final
+        })
     
     f = open(SEMESTER + '.txt', 'w')
     f.write(json.dumps(final_data))
     f.close()
 
 
-get_departments()
-get_courses()
+# get_departments()
+# get_courses()
 join_data()
