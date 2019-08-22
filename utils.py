@@ -24,6 +24,14 @@ class User:
                 result.append(course)
         return result
 
+    def add_course(self, course_ident):
+        if not course_ident in self.courses:
+            self.courses.append(course_ident)
+    
+    def remove_course(self, course_ident):
+        if course_ident in self.courses:
+            self.courses.remove(course_ident)
+
         
 
     # def __eq__(self, num):
