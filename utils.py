@@ -55,7 +55,7 @@ def search_department(qs):
 
 def course_to_str(course):
     qstr = ''
-    qstr = course['title'] + ' گروه ' + course['group'] + '\n' +course['time_room'] + '\n' + course['teacher']
+    qstr = course['title'] + ' گروه ' + course['group'] + '\n' + course['gender'] + '\n' +course['time_room'] + '\n' + course['teacher'] + '\n' + 'امتحان پایان ترم:' + course['final_date']
     return qstr
 
 
