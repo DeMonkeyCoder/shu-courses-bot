@@ -13,6 +13,7 @@ from config import TOKEN, PROXY
 def handle(msg):
     
     content_type, chat_type, chat_id = telepot.glance(msg)
+    print(chat_id)
     if chat_type == u'private' and content_type == 'text':
         bot.sendMessage(chat_id,
                     'hi')
