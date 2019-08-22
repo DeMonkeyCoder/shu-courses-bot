@@ -8,6 +8,11 @@ from bs4 import BeautifulSoup
 
 SEMESTER = '13981'
 
+try:
+    os.stat(SEMESTER)
+except:
+    os.mkdir(SEMESTER)
+
 def get_departments():
     print('Getting Departments')
     headers = {
@@ -163,9 +168,28 @@ def get_course_time_room(courseIdent, departmentId):
         'time_room': '\n'.join([x for x in time_room_div.contents if type(x) is bs4.element.NavigableString]),
         'teacher': teacher_div.text
     }
+
+def join_data():
     
+    f = open('departments' + SEMESTER + '.txt', 'r')
+    departments = json.loads(f.read())
+    f.close()
+    final_data = {}
+    for dep in departments:
 
-# get_departments()
+        f = open(SEMESTER + '/' + dep['id'] + '.txt', 'r')
+        courses = json.loads(f.read())
+        f.close()
+        final_data[dep['id']] = {
+            'title': dep['title'],
+            'courses': courses
+        }
+    
+    f = open(SEMESTER + '.txt', 'w')
+    f.write(json.dumps(final_data))
+    f.close()
+
+
+get_departments()
 get_courses()
-
-# print(get_course_time_room('290133031^1', '2901'))
+join_data()
