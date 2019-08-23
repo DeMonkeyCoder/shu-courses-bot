@@ -1,9 +1,19 @@
 
 import json
+from enum import Enum
+
+class MenuState(Enum):
+    GENERAL = "GENERAL"
+    SEARCH_COURSE = 'SEARCH_COURSE'
+    SELECT_DEPARTMENT = 'SELECT_DEPARTMENT'
+
 
 SEMESTER = "13981"
 users = []
 sess_data = []
+
+def persian_text_to_arabic(string):
+    return string.replace('ی', 'ي')
 
 def get_dep_by_id(dep_id):
     for dep in sess_data:
@@ -15,9 +25,11 @@ class User:
     def __init__(self, chat_id):
         self.chat_id = chat_id
         self.dep_id = '3401' 
+        self.menu_state = MenuState.GENERAL
         self.courses = []
     
     def search_course(self, qs):
+        qs = persian_text_to_arabic(qs)
         result = []
         for course in get_dep_by_id(self.dep_id)['courses']:
             if qs in course['title']:
@@ -47,6 +59,7 @@ def get_user(chat_id):
     return u
 
 def search_department(qs):
+    qs = persian_text_to_arabic(qs)
     result = []
     for department in sess_data:
             if qs in department['title']:
