@@ -13,7 +13,7 @@ users = []
 sess_data = []
 
 def persian_text_to_arabic(string):
-    return string.replace('ی', 'ي')
+    return string.replace('ی', 'ي').replace('ک', 'ك')
 
 def get_dep_by_id(dep_id):
     for dep in sess_data:
