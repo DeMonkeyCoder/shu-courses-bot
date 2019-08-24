@@ -1,8 +1,9 @@
-import datetime
 import time
-import json
-import os
-import requests
+# import datetime
+# import json
+# import os
+# import requests
+
 import telepot
 from telepot.loop import MessageLoop
 from telepot.namedtuple import ReplyKeyboardMarkup, KeyboardButton
@@ -11,66 +12,54 @@ from config import TOKEN, PROXY
 from utils import course_to_str, course_to_str, get_user, MenuState, search_department
 
 
+def keyboard_maker(keyboard_labels):
+    my_keyboard = []
+    for row in keyboard_labels:
+        keyboard_row = []
+        for label in row:
+            keyboard_row.append(KeyboardButton(text=label))
+
+        my_keyboard.append(keyboard_row)
+
+    return ReplyKeyboardMarkup(keyboard=my_keyboard, resize_keyboard=True)
+
+
 def send_welcome_message(chat_id):
     bot.sendMessage(chat_id,
                     'لطفا از منوی بات گزینه مورد نظرتان را انتخاب کنید',
                     'Markdown',
-                    reply_markup=ReplyKeyboardMarkup(
-                        keyboard=[
-                            [
-                                KeyboardButton(text="انتخاب بخش")
-                            ],
-                            [
-                                KeyboardButton(text="جستجوی درس های بخش")
-                            ],
-                            [
-                                KeyboardButton(text="درس های انتخاب شده")
-                            ],
-                        ]
-                    ),
-                    )
+                    reply_markup=keyboard_maker([
+                        ['انتخاب بخش'],
+                        ['جستجوی درس های بخش'],
+                        ['درس های انتخاب شده']
+                    ]))
 
 
 def send_select_department_message(chat_id):
     bot.sendMessage(chat_id,
                     'لطفا تمام یا قسمتی از نام بخش مورد نظر را وارد کنید',
                     'Markdown',
-                    reply_markup=ReplyKeyboardMarkup(
-                        keyboard=[
-                            [
-                                KeyboardButton(text="بازگشت")
-                            ],
-                        ]
-                    ),
-                    )
+                    reply_markup=keyboard_maker([
+                        ['بازگشت']
+                    ]))
 
 
 def send_search_course_message(chat_id):
     bot.sendMessage(chat_id,
                     'لطفا تمام یا قسمتی از نام درس مورد نظر را وارد کنید',
                     'Markdown',
-                    reply_markup=ReplyKeyboardMarkup(
-                        keyboard=[
-                            [
-                                KeyboardButton(text="بازگشت")
-                            ],
-                        ]
-                    ),
-                    )
+                    reply_markup=keyboard_maker([
+                        ['بازگشت']
+                    ]))
 
 
 def send_not_found_message(chat_id):
     bot.sendMessage(chat_id,
                     'موردی یافت نشد',
                     'Markdown',
-                    reply_markup=ReplyKeyboardMarkup(
-                        keyboard=[
-                            [
-                                KeyboardButton(text="بازگشت")
-                            ],
-                        ]
-                    ),
-                    )
+                    reply_markup=keyboard_maker([
+                        ['بازگشت']
+                    ]))
 
 
 def handle(msg):
