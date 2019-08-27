@@ -20,9 +20,12 @@ def save_users():
 
 def load_users():
     global users
-    f = open('users.txt', 'rb')
-    users = pickle.load(f)
-    f.close()
+    try:
+        f = open('users.txt', 'rb')
+        users = pickle.load(f)
+        f.close()
+    except:
+        pass
 
 def persian_text_to_arabic(string):
     return string.replace('ی', 'ي').replace('ک', 'ك')
