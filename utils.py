@@ -1,4 +1,5 @@
 import json
+import pickle
 from enum import Enum
 
 
@@ -13,12 +14,15 @@ users = []
 sess_data = []
 
 def save_users():
-    #TODO: complete this
-    pass
+    f = open('users.txt', 'wb')
+    pickle.dump(users, f)
+    f.close()
 
 def load_users():
-    #TODO: complete this
-    pass
+    global users
+    f = open('users.txt', 'rb')
+    users = pickle.load(f)
+    f.close()
 
 def persian_text_to_arabic(string):
     return string.replace('ی', 'ي').replace('ک', 'ك')
@@ -32,11 +36,12 @@ def get_dep_by_id(dep_id):
 
 class User:
     def __init__(self, chat_id):
+        print('hi')
         self.chat_id = chat_id
         self.dep_id = '2903'
         self.menu_state = MenuState.GENERAL
         self.courses = []
-        save_users()
+        users.append(self)
 
     def search_course(self, qs):
         qs = persian_text_to_arabic(qs)
@@ -47,18 +52,20 @@ class User:
         return result
 
     def get_courses(self):
-        #TODO: complete this
-        return []
+        result = []
+        for department in sess_data:
+            for course in department['courses']:
+                if course['ident'] in self.courses:
+                    result.append(course)
+        return result
 
     def add_course(self, course_ident):
         if course_ident not in self.courses:
-            self.courses.append(course_ident)
-        save_users()        
+            self.courses.append(course_ident)     
 
     def remove_course(self, course_ident):
         if course_ident in self.courses:
             self.courses.remove(course_ident)
-        save_users()        
 
     # def __eq__(self, num):
     #     return self.chat_id == num

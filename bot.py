@@ -9,7 +9,7 @@ from telepot.loop import MessageLoop
 from telepot.namedtuple import ReplyKeyboardMarkup, KeyboardButton
 
 from config import TOKEN, PROXY
-from utils import course_to_str, course_to_str, get_user, MenuState, search_department, all_departments
+from utils import save_users, course_to_str, course_to_str, get_user, MenuState, search_department, all_departments
 
 
 def keyboard_maker(keyboard_labels):
@@ -87,15 +87,23 @@ def handle(msg):
         # print(get_user(chat_id).search_course(msg['text']))
         # print([course_to_str(c) for c in get_user(chat_id).search_course(msg['text'])])
         if msg['text'][0:4] == '/del':
-            #TODO: complete this
-            bot.sendMessage(chat_id,
-                            'با موفقیت ثبت شد'
-                            )
+            user.remove_course(msg['text'][4:])
+            courses = user.get_courses()
+            if len(courses) == 0:
+                send_not_found_message(chat_id)
+            else:
+                messages = bot_messages_generator([course_to_str(c) + '\n/del' + c['ident'] + '\n\n' for c in courses])
+                for message in messages:
+                    bot.sendMessage(chat_id,
+                                    message
+                                )
+            send_welcome_message(chat_id)
         elif msg['text'][0:4] == '/add':
-            #TODO: complete this
+            user.add_course(msg['text'][4:])
             bot.sendMessage(chat_id,
                             'با موفقیت ثبت شد'
                             )
+            send_search_course_message(chat_id)
         elif user.menu_state == MenuState.GENERAL:
             if msg['text'] == 'انتخاب بخش':
                 user.menu_state = MenuState.SELECT_DEPARTMENT
@@ -166,4 +174,5 @@ if __name__ == '__main__':
     MessageLoop(bot, handle).run_as_thread()
 
     while True:
-        time.sleep(30)
+        save_users()
+        time.sleep(10000)
