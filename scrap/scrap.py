@@ -196,7 +196,7 @@ def join_data():
 
         courses_final = []
         for c in courses:
-            objc = { 'ident' : c}
+            objc = { 'ident' : '_'.join(c.split('^'))}
             objc.update(courses[c])
             courses_final.append(objc)
 
@@ -212,5 +212,5 @@ def join_data():
 
 
 # get_departments()
-get_courses()
+# get_courses()
 join_data()
