@@ -9,7 +9,7 @@ from telepot.loop import MessageLoop
 from telepot.namedtuple import ReplyKeyboardMarkup, KeyboardButton
 
 from config import TOKEN, PROXY
-from utils import course_to_str, course_to_str, get_user, MenuState, search_department
+from utils import course_to_str, course_to_str, get_user, MenuState, search_department, all_departments
 
 
 def keyboard_maker(keyboard_labels):
@@ -36,8 +36,15 @@ def send_welcome_message(chat_id):
 
 
 def send_select_department_message(chat_id):
+    departments = all_departments()
+    print(departments)
+    messages = bot_messages_generator([dep['title'] + ' ' + '/dep' + dep['id'] + '\n' for dep in departments])
+    for message in messages:
+        bot.sendMessage(chat_id,
+                        message
+                    )
     bot.sendMessage(chat_id,
-                    'لطفا تمام یا قسمتی از نام بخش مورد نظر را وارد کنید',
+                    'لطفا بخش مورد نظر را انتخاب یا تمام یا قسمتی از نام بخش مورد نظر را وارد کنید',
                     'Markdown',
                     reply_markup=keyboard_maker([
                         ['بازگشت']
@@ -61,6 +68,18 @@ def send_not_found_message(chat_id):
                         ['بازگشت']
                     ]))
 
+def bot_messages_generator(message_pieces):
+    messages = []
+    message = ''
+
+    for piece in message_pieces:
+        if(len(message + piece) >= 4096):
+            messages.append(message)
+            message = ''
+        message += piece
+    if(len(message) > 0):
+        messages.append(message)
+    return messages
 
 def handle(msg):
     content_type, chat_type, chat_id = telepot.glance(msg)
@@ -97,8 +116,10 @@ def handle(msg):
                 if len(departments) == 0:
                     send_not_found_message(chat_id)
                 else:
-                    bot.sendMessage(chat_id,
-                                    '\n\n'.join([dep['title'] + '\n' + '/dep' + dep['id'] for dep in departments])
+                    messages = bot_messages_generator([dep['title'] + ' ' + '/dep' + dep['id'] + '\n' for dep in departments])
+                    for message in messages:
+                        bot.sendMessage(chat_id,
+                                        message
                                     )
 
         elif user.menu_state == MenuState.SEARCH_COURSE:
@@ -112,10 +133,11 @@ def handle(msg):
                 if len(courses) == 0:
                     send_not_found_message(chat_id)
                 else:
-                    bot.sendMessage(chat_id,
-                                    '\n\n'.join([course_to_str(c) for c in courses])
+                    messages = bot_messages_generator([course_to_str(c) + '\n\n' for c in courses])
+                    for message in messages:
+                        bot.sendMessage(chat_id,
+                                        message
                                     )
-
 
 if __name__ == '__main__':
     if PROXY:

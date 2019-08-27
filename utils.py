@@ -26,7 +26,7 @@ def get_dep_by_id(dep_id):
 class User:
     def __init__(self, chat_id):
         self.chat_id = chat_id
-        self.dep_id = '3401'
+        self.dep_id = '2903'
         self.menu_state = MenuState.GENERAL
         self.courses = []
 
@@ -63,7 +63,14 @@ def search_department(qs):
     qs = persian_text_to_arabic(qs)
     result = []
     for department in sess_data:
-        if qs in department['title']:
+        if len(department['courses']) > 0 and qs in department['title']:
+            result.append(department)
+    return result
+
+def all_departments():
+    result = []
+    for department in sess_data:
+        if len(department['courses']) > 0:
             result.append(department)
     return result
 
