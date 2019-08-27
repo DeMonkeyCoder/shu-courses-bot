@@ -12,6 +12,13 @@ SEMESTER = "13981"
 users = []
 sess_data = []
 
+def save_users():
+    #TODO: complete this
+    pass
+
+def load_users():
+    #TODO: complete this
+    pass
 
 def persian_text_to_arabic(string):
     return string.replace('ی', 'ي').replace('ک', 'ك')
@@ -29,6 +36,7 @@ class User:
         self.dep_id = '2903'
         self.menu_state = MenuState.GENERAL
         self.courses = []
+        save_users()
 
     def search_course(self, qs):
         qs = persian_text_to_arabic(qs)
@@ -38,13 +46,19 @@ class User:
                 result.append(course)
         return result
 
+    def get_courses(self):
+        #TODO: complete this
+        return []
+
     def add_course(self, course_ident):
         if course_ident not in self.courses:
             self.courses.append(course_ident)
+        save_users()        
 
     def remove_course(self, course_ident):
         if course_ident in self.courses:
             self.courses.remove(course_ident)
+        save_users()        
 
     # def __eq__(self, num):
     #     return self.chat_id == num
@@ -86,6 +100,7 @@ def load_data():
     f = open('scrap/' + SEMESTER + '.txt', 'r')
     sess_data = json.loads(f.read())
     f.close()
+    load_users()
 
 
 load_data()

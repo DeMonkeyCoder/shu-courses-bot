@@ -37,7 +37,6 @@ def send_welcome_message(chat_id):
 
 def send_select_department_message(chat_id):
     departments = all_departments()
-    print(departments)
     messages = bot_messages_generator([dep['title'] + ' ' + '/dep' + dep['id'] + '\n' for dep in departments])
     for message in messages:
         bot.sendMessage(chat_id,
@@ -87,13 +86,33 @@ def handle(msg):
         user = get_user(chat_id)
         # print(get_user(chat_id).search_course(msg['text']))
         # print([course_to_str(c) for c in get_user(chat_id).search_course(msg['text'])])
-        if user.menu_state == MenuState.GENERAL:
+        if msg['text'][0:4] == '/del':
+            #TODO: complete this
+            bot.sendMessage(chat_id,
+                            'با موفقیت ثبت شد'
+                            )
+        elif msg['text'][0:4] == '/add':
+            #TODO: complete this
+            bot.sendMessage(chat_id,
+                            'با موفقیت ثبت شد'
+                            )
+        elif user.menu_state == MenuState.GENERAL:
             if msg['text'] == 'انتخاب بخش':
                 user.menu_state = MenuState.SELECT_DEPARTMENT
                 send_select_department_message(chat_id)
             elif msg['text'] == 'جستجوی درس های بخش':
                 user.menu_state = MenuState.SEARCH_COURSE
                 send_search_course_message(chat_id)
+            elif msg['text'] == 'درس های انتخاب شده':
+                courses = user.get_courses()
+                if len(courses) == 0:
+                    send_not_found_message(chat_id)
+                else:
+                    messages = bot_messages_generator([course_to_str(c) + '\n/del' + c['ident'] + '\n\n' for c in courses])
+                    for message in messages:
+                        bot.sendMessage(chat_id,
+                                        message
+                                    )
             else:
                 send_welcome_message(chat_id)
 
@@ -133,7 +152,7 @@ def handle(msg):
                 if len(courses) == 0:
                     send_not_found_message(chat_id)
                 else:
-                    messages = bot_messages_generator([course_to_str(c) + '\n\n' for c in courses])
+                    messages = bot_messages_generator([course_to_str(c) + '\n/add' + c['ident'] + '\n\n' for c in courses])
                     for message in messages:
                         bot.sendMessage(chat_id,
                                         message
