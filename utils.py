@@ -39,7 +39,6 @@ def get_dep_by_id(dep_id):
 
 class User:
     def __init__(self, chat_id):
-        print('hi')
         self.chat_id = chat_id
         self.dep_id = '2903'
         self.menu_state = MenuState.GENERAL

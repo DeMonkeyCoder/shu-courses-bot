@@ -36,11 +36,20 @@ def send_welcome_message(chat_id):
 
 
 def send_select_department_message(chat_id):
-    departments = all_departments()
-    messages = bot_messages_generator([dep['title'] + ' ' + '/dep' + dep['id'] + '\n' for dep in departments])
-    for message in messages:
-        bot.sendMessage(chat_id,
-                        message
+    bot.sendMessage(chat_id,
+                        '''بخش كامپيوتر /dep2903
+بخش مهندسي قدرت و كنترل /dep2901
+بخش مهندسي مخابرات و الكترونيك /dep2902
+بخش مواد /dep1002
+بخش رياضي /dep1103
+بخش امار /dep1104
+بخش فيزيك /dep1106
+بخش زبـان وادبيات فارسي /dep1205
+بخش زبـانهاي خارجي وزبان شناسي /dep1206
+بخش فلسفه و كلام اسلامي /dep3401
+بخش علوم قرآن و فقه /dep3402
+بخش عمومي /dep2701
+بخش برق /dep2703'''
                     )
     bot.sendMessage(chat_id,
                     'لطفا بخش مورد نظر را انتخاب یا تمام یا قسمتی از نام بخش مورد نظر را وارد کنید',
@@ -135,8 +144,8 @@ def handle(msg):
                 bot.sendMessage(chat_id,
                                 'با موفقیت ثبت شد'
                                 )
-                user.menu_state = MenuState.GENERAL
-                send_welcome_message(chat_id)
+                user.menu_state = MenuState.SEARCH_COURSE
+                send_search_course_message(chat_id)
 
             else:
                 departments = search_department(msg['text'])
