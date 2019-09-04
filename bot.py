@@ -37,7 +37,7 @@ def send_welcome_message(chat_id):
 
 def send_select_department_message(chat_id):
     bot.sendMessage(chat_id,
-                        '''بخش كامپيوتر /dep2903
+                    '''بخش كامپيوتر /dep2903
 بخش مهندسي قدرت و كنترل /dep2901
 بخش مهندسي مخابرات و الكترونيك /dep2902
 بخش مواد /dep1002
@@ -76,18 +76,21 @@ def send_not_found_message(chat_id):
                         ['بازگشت']
                     ]))
 
+
 def bot_messages_generator(message_pieces):
     messages = []
     message = ''
 
+    msg_max_length = 4096
     for piece in message_pieces:
-        if(len(message + piece) >= 4096):
+        if len(message + piece) >= msg_max_length:
             messages.append(message)
             message = ''
         message += piece
-    if(len(message) > 0):
+    if len(message) > 0:
         messages.append(message)
     return messages
+
 
 def handle(msg):
     content_type, chat_type, chat_id = telepot.glance(msg)
@@ -105,7 +108,7 @@ def handle(msg):
                 for message in messages:
                     bot.sendMessage(chat_id,
                                     message
-                                )
+                                    )
             send_welcome_message(chat_id)
         elif msg['text'][0:4] == '/add':
             user.add_course(msg['text'][4:])
@@ -125,11 +128,12 @@ def handle(msg):
                 if len(courses) == 0:
                     send_not_found_message(chat_id)
                 else:
-                    messages = bot_messages_generator([course_to_str(c) + '\n/del' + c['ident'] + '\n\n' for c in courses])
+                    messages = bot_messages_generator(
+                        [course_to_str(c) + '\n/del' + c['ident'] + '\n\n' for c in courses])
                     for message in messages:
                         bot.sendMessage(chat_id,
                                         message
-                                    )
+                                        )
             else:
                 send_welcome_message(chat_id)
 
@@ -152,11 +156,12 @@ def handle(msg):
                 if len(departments) == 0:
                     send_not_found_message(chat_id)
                 else:
-                    messages = bot_messages_generator([dep['title'] + ' ' + '/dep' + dep['id'] + '\n' for dep in departments])
+                    messages = bot_messages_generator(
+                        [dep['title'] + ' ' + '/dep' + dep['id'] + '\n' for dep in departments])
                     for message in messages:
                         bot.sendMessage(chat_id,
                                         message
-                                    )
+                                        )
 
         elif user.menu_state == MenuState.SEARCH_COURSE:
 
@@ -169,11 +174,13 @@ def handle(msg):
                 if len(courses) == 0:
                     send_not_found_message(chat_id)
                 else:
-                    messages = bot_messages_generator([course_to_str(c) + '\n/add' + c['ident'] + '\n\n' for c in courses])
+                    messages = bot_messages_generator(
+                        [course_to_str(c) + '\n/add' + c['ident'] + '\n\n' for c in courses])
                     for message in messages:
                         bot.sendMessage(chat_id,
                                         message
-                                    )
+                                        )
+
 
 if __name__ == '__main__':
     if PROXY:
@@ -182,6 +189,7 @@ if __name__ == '__main__':
     bot = telepot.Bot(TOKEN)
     MessageLoop(bot, handle).run_as_thread()
 
+    save_time_delay = 2 * 60 * 60
     while True:
+        time.sleep(save_time_delay)
         save_users()
-        time.sleep(10000)

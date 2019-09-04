@@ -13,10 +13,12 @@ SEMESTER = "13981"
 users = []
 sess_data = []
 
+
 def save_users():
     f = open('users.txt', 'wb')
     pickle.dump(users, f)
     f.close()
+
 
 def load_users():
     global users
@@ -24,8 +26,9 @@ def load_users():
         f = open('users.txt', 'rb')
         users = pickle.load(f)
         f.close()
-    except:
+    except FileNotFoundError:
         pass
+
 
 def persian_text_to_arabic(string):
     return string.replace('ی', 'ي').replace('ک', 'ك')
@@ -63,7 +66,7 @@ class User:
 
     def add_course(self, course_ident):
         if course_ident not in self.courses:
-            self.courses.append(course_ident)     
+            self.courses.append(course_ident)
 
     def remove_course(self, course_ident):
         if course_ident in self.courses:
@@ -89,6 +92,7 @@ def search_department(qs):
         if len(department['courses']) > 0 and qs in department['title']:
             result.append(department)
     return result
+
 
 def all_departments():
     result = []
