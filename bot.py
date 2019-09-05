@@ -1,3 +1,4 @@
+import pprint
 import time
 # import datetime
 # import json
@@ -6,7 +7,7 @@ import time
 
 import telepot
 from telepot.loop import MessageLoop
-from telepot.namedtuple import ReplyKeyboardMarkup, KeyboardButton
+from telepot.namedtuple import ReplyKeyboardMarkup, KeyboardButton, InlineQueryResultArticle, InputTextMessageContent
 
 from config import TOKEN, PROXY
 from utils import save_users, course_to_str, course_to_str, get_user, MenuState, search_department, all_departments
@@ -92,9 +93,11 @@ def bot_messages_generator(message_pieces):
     return messages
 
 
-def handle(msg):
+def message_handler(msg):
     content_type, chat_type, chat_id = telepot.glance(msg)
     if chat_type == u'private' and content_type == 'text':
+        if 'entities' in msg and msg['entities'][0]['type'] == 'bot_command' and msg['text'][0] != '/':
+            return
         user = get_user(chat_id)
         # print(get_user(chat_id).search_course(msg['text']))
         # print([course_to_str(c) for c in get_user(chat_id).search_course(msg['text'])])
@@ -182,12 +185,34 @@ def handle(msg):
                                         )
 
 
+def on_inline_query(msg):
+    query_id, from_id, query_string = telepot.glance(msg, flavor='inline_query')
+    user = get_user(from_id)
+    articles = [InlineQueryResultArticle(
+        id=str(time.time()),
+        title=crs['title'] + ' گروه ' + crs['group'],
+        input_message_content=InputTextMessageContent(
+            message_text=course_to_str(crs) + '\n/add' + crs['ident'] + '\n\n'
+        )
+    ) for crs in user.search_course(query_string)[:10]]
+    if not articles:
+        articles = [InlineQueryResultArticle(
+            id=str(time.time()),
+            title='موردی یافت نشد',
+            input_message_content=InputTextMessageContent(
+                message_text='موردی یافت نشد'
+            )
+        )]
+
+    bot.answerInlineQuery(query_id, articles)
+
+
 if __name__ == '__main__':
     if PROXY:
         telepot.api.set_proxy(PROXY)
 
     bot = telepot.Bot(TOKEN)
-    MessageLoop(bot, handle).run_as_thread()
+    MessageLoop(bot, {'chat': message_handler, 'inline_query': on_inline_query}).run_as_thread()
 
     save_time_delay = 2 * 60 * 60
     while True:

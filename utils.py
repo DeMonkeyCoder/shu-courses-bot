@@ -111,7 +111,7 @@ def course_to_str(course):
 def load_data():
     global sess_data
     f = open('scrap/' + SEMESTER + '.txt', 'r')
-    sess_data = json.loads(f.read())
+    sess_data = eval(f.read())  # json.loads(f.read())
     f.close()
     load_users()
 
